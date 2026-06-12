@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1050">
+    <title>ตารางการแข่งขันฟุตบอลโลก 2026 - 104 แมตช์</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --bg-start: #f0f4f8;
+            --bg-end: #d9e2ec;
+            --card-bg: rgba(255,255,255,0.92);
+            --card-shadow: 0 10px 35px rgba(0,0,0,0.08);
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --border-light: #e2e8f0;
+            --thead-start: #0f172a;
+            --thead-end: #334155;
+            --vs-bg: #ef4444;
+            --match-bg: #ffffff;
+            --match-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            --ended-bg: #f1f5f9;
+            --ended-opacity: 0.45;
+            --ended-badge-bg: #94a3b8;
+            --active-border: #10b981;
+            --active-glow: rgba(16, 185, 129, 0.2);
+            --active-badge-bg: #10b981;
+            --search-bg: #ffffff;
+            --input-border: #cbd5e1;
+            --control-bg: #f8fafc;
+            --control-text: #1e293b;
+            --count-text: #64748b;
+            --empty-slot-bg: #f8fafc;
+            --empty-slot-border: #e2e8f0;
+        }
+
+        .dark-mode {
+            --bg-start: #0f172a;
+            --bg-end: #1e293b;
+            --card-bg: rgba(30, 41, 59, 0.95);
+            --card-shadow: 0 10px 35px rgba(0,0,0,0.4);
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --border-light: #334155;
+            --thead-start: #020617;
+            --thead-end: #1e293b;
+            --vs-bg: #dc2626;
+            --match-bg: #1e293b;
+            --match-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            --ended-bg: #1a2236;
+            --ended-opacity: 0.35;
+            --ended-badge-bg: #475569;
+            --active-border: #34d399;
+            --active-glow: rgba(52, 211, 153, 0.25);
+            --active-badge-bg: #34d399;
+            --search-bg: #1e293b;
+            --input-border: #475569;
+            --control-bg: #1e293b;
+            --control-text: #f1f5f9;
+            --count-text: #94a3b8;
+            --empty-slot-bg: #1a2236;
+            --empty-slot-border: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans Thai', sans-serif;
+            background: linear-gradient(145deg, var(--bg-start), var(--bg-end));
+            color: var(--text-primary);
+            margin: 0;
+            padding: 25px;
+            transition: background 0.4s ease, color 0.3s ease;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .container {
+            width: 100%;
+            max-width: 1050px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 28px 32px;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+        }
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        h2 { 
+            color: var(--text-primary);
+            font-size: clamp(20px, 4vw, 30px); 
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .theme-toggle, .print-btn {
+            background: var(--control-bg);
+            border: 1px solid var(--input-border);
+            padding: 10px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--control-text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            font-family: 'Noto Sans Thai', sans-serif;
+            white-space: nowrap;
+        }
+        .theme-toggle:hover, .print-btn:hover {
+            background: var(--border-light);
+            transform: translateY(-1px);
+        }
+        .print-btn:hover {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .controls { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 12px; 
+            margin-bottom: 24px; 
+            align-items: center; 
+        }
+        .search-box { 
+            flex: 1; 
+            min-width: 220px; 
+            position: relative; 
+        }
+        .search-box span { 
+            position: absolute; 
+            left: 16px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            font-size: 18px; 
+            pointer-events: none;
+        }
+        .search-box input, #dateFilter, #roundFilter { 
+            width: 100%; 
+            padding: 12px 16px 12px 44px; 
+            border: 2px solid var(--input-border); 
+            border-radius: 14px; 
+            font-size: 15px; 
+            box-sizing: border-box; 
+            font-family: 'Noto Sans Thai', sans-serif; 
+            background: var(--search-bg);
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+        #dateFilter, #roundFilter { 
+            width: 180px; 
+            padding-left: 14px; 
+        }
+        .search-box input:focus, #dateFilter:focus, #roundFilter:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+        }
+        .checkbox-label { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            color: var(--control-text); 
+            background: var(--control-bg); 
+            padding: 10px 16px; 
+            border-radius: 12px; 
+            font-size: 15px; 
+            border: 1px solid var(--input-border);
+            transition: all 0.2s;
+            white-space: nowrap;
+            user-select: none;
+        }
+        .checkbox-label:hover { background: var(--border-light); }
+        .checkbox-label input { 
+            width: 18px; 
+            height: 18px; 
+            cursor: pointer; 
+            accent-color: #3b82f6;
+        }
+        #clearFilter { 
+            padding: 12px 20px; 
+            border: none; 
+            border-radius: 14px; 
+            background: #ef4444; 
+            color: white; 
+            cursor: pointer; 
+            font-weight: 600; 
+            font-size: 15px; 
+            font-family: 'Noto Sans Thai', sans-serif; 
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        #clearFilter:hover { background: #dc2626; transform: translateY(-1px); }
+        .match-count { 
+            margin-left: auto; 
+            font-weight: 600; 
+            color: var(--count-text); 
+            font-size: 15px; 
+            background: var(--control-bg);
+            padding: 10px 18px;
+            border-radius: 12px;
+            border: 1px solid var(--input-border);
+            white-space: nowrap;
+        }
+        .match-count span { 
+            color: #3b82f6; 
+            font-size: 1.2rem; 
+            font-weight: 700;
+        }
+
+        /* ตาราง */
+        table { 
+            width: 100%; 
+            border-collapse: separate; 
+            border-spacing: 0 5px; 
+            font-size: 15px; 
+        }
+        th, td { 
+            padding: 14px 12px; 
+            text-align: center; 
+        }
+        th { 
+            background: linear-gradient(135deg, var(--thead-start), var(--thead-end)); 
+            color: #fff; 
+            font-weight: 600; 
+            font-size: 16px; 
+            letter-spacing: 0.3px;
+        }
+        th:first-child { border-top-left-radius: 10px; }
+        th:last-child { border-top-right-radius: 10px; }
+        tbody tr { 
+            background-color: var(--match-bg); 
+            box-shadow: var(--match-shadow); 
+            transition: all 0.25s ease; 
+            border: 2px solid transparent;
+        }
+        tbody tr:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+        }
+        tbody tr td:first-child { 
+            border-top-left-radius: 10px; 
+            border-bottom-left-radius: 10px; 
+        }
+        tbody tr td:last-child { 
+            border-top-right-radius: 10px; 
+            border-bottom-right-radius: 10px; 
+        }
+
+        .match { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            width: 100%; 
+            min-height: 44px;
+            gap: 0;
+        }
+        .team-home, .team-away { 
+            flex: 1; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            color: var(--text-primary); 
+            font-weight: 600; 
+            font-size: 16px; 
+            min-height: 36px;
+        }
+        .team-home { justify-content: flex-end; }
+        .team-away { justify-content: flex-start; }
+        .vs { 
+            background: var(--vs-bg); 
+            color: #fff; 
+            font-size: 0.8em; 
+            margin: 0 14px; 
+            padding: 4px 12px; 
+            border-radius: 20px; 
+            font-weight: 700; 
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 6px rgba(239,68,68,0.3);
+            flex-shrink: 0;
+        }
+        .flag { 
+            width: 28px; 
+            height: 20px; 
+            border-radius: 3px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        /* ช่องว่างสำหรับเขียน (Empty Slots) */
+        .empty-slot {
+            display: inline-block;
+            min-width: 100px;
+            height: 28px;
+            border-bottom: 2px dashed var(--empty-slot-border);
+            background: var(--empty-slot-bg);
+            border-radius: 4px;
+            margin: 0 5px;
+        }
+
+        /* รอบ */
+        .round-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 14px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+            white-space: nowrap;
+        }
+        .round-group { background: #dbeafe; color: #1e40af; }
+        .round-knockout { background: #ede9fe; color: #6d28d9; }
+        .dark-mode .round-group { background: #1e3a5f; color: #93c5fd; }
+        .dark-mode .round-knockout { background: #3b2f5c; color: #c4b5fd; }
+
+        /* การแข่งขันที่จบแล้ว */
+        .row-ended { 
+            opacity: var(--ended-opacity); 
+            background-color: var(--ended-bg) !important; 
+            filter: grayscale(0.3);
+        }
+        .row-ended:hover {
+            opacity: 0.65;
+            filter: grayscale(0.1);
+        }
+        .ended-badge { 
+            display: inline-block; 
+            background: var(--ended-badge-bg); 
+            color: white; 
+            font-size: 0.75rem; 
+            padding: 3px 10px; 
+            border-radius: 20px; 
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        /* ไฮไลท์วันถัดไป */
+        .active-day { 
+            transform: scale(1.02); 
+            z-index: 5; 
+            position: relative; 
+            box-shadow: 0 0 0 3px var(--active-border), 0 8px 28px var(--active-glow);
+            border: 2px solid var(--active-border) !important;
+            border-radius: 10px;
+            animation: pulse-border 2s infinite;
+        }
+        @keyframes pulse-border {
+            0%, 100% { box-shadow: 0 0 0 3px var(--active-border), 0 8px 28px var(--active-glow); }
+            50% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.3), 0 8px 32px var(--active-glow); }
+        }
+        .active-badge { 
+            display: inline-block; 
+            background: var(--active-badge-bg); 
+            color: white; 
+            font-size: 0.8rem; 
+            padding: 3px 12px; 
+            border-radius: 20px; 
+            margin-left: 6px; 
+            font-weight: 600;
+            animation: fade-in 0.5s ease;
+        }
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                border: none;
+                width: 100%;
+                max-width: 100%;
+                padding: 15px;
+            }
+            .controls, .button-group {
+                display: none;
+            }
+            .empty-slot {
+                border-bottom: 2px dashed #999;
+                background: transparent;
+            }
+            table {
+                font-size: 13px;
+            }
+            th, td {
+                padding: 8px 6px;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 15px;
+            }
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .search-box {
+                min-width: auto;
+            }
+            #dateFilter, #roundFilter {
+                width: 100%;
+            }
+            .match-count {
+                margin-left: 0;
+                text-align: center;
+            }
+            th, td {
+                padding: 10px 6px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-row">
+        <h2>🏆 โปรแกรมการแข่งขันฟุตบอลโลก 2026 </h2>
+        <div class="button-group">
+            <button class="print-btn" onclick="window.print()">
+                🖨️ พิมพ์
+            </button>
+            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+                <span id="themeIcon">🌙</span> <span id="themeText">โหมดมืด</span>
+            </button>
+        </div>
+    </div>
+    
+    <div class="controls no-print">
+        <div class="search-box">
+            <span>🔍</span>
+            <input type="text" id="teamSearch" placeholder="ค้นหาทีม..." aria-label="ค้นหาทีม">
+        </div>
+        <select id="dateFilter" aria-label="กรองตามวันที่">
+            <option value="">📅 ทุกวัน</option>
+        </select>
+        <select id="roundFilter" aria-label="กรองตามรอบ">
+            <option value="">🏟️ ทุกรอบ</option>
+            <option value="group">📋 รอบแบ่งกลุ่ม</option>
+            <option value="round32">🏟️ รอบ 32 ทีม</option>
+            <option value="round16">🏟️ รอบ 16 ทีม</option>
+            <option value="quarter">🏆 รอบก่อนรองฯ</option>
+            <option value="semi">🏆 รอบรองฯ</option>
+            <option value="third">🥉 ชิงที่ 3</option>
+            <option value="final">🏆 รอบชิงชนะเลิศ</option>
+        </select>
+        <label class="checkbox-label">
+            <input type="checkbox" id="hideEnded"> ซ่อนคู่ที่จบแล้ว
+        </label>
+        <button id="clearFilter">ล้างตัวกรอง</button>
+        <div class="match-count">พบ <span id="matchCount">0</span> คู่</div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th width="5%">#</th>
+                <th width="11%">รอบ</th>
+                <th width="23%">📅 วันที่</th>
+                <th width="16%">🕒 เวลา (ไทย)</th>
+                <th width="45%">⚽ คู่แข่งขัน</th>
+            </tr>
+        </thead>
+        <tbody id="schedule-body"></tbody>
+    </table>
+</div>
+
+<script>
+    function initTheme() {
+        const saved = localStorage.getItem('theme');
+        if (saved === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('themeIcon').textContent = '☀️';
+            document.getElementById('themeText').textContent = 'โหมดสว่าง';
+        }
+    }
+
+    function toggleTheme() {
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        document.getElementById('themeIcon').textContent = isDark ? '☀️' : '🌙';
+        document.getElementById('themeText').textContent = isDark ? 'โหมดสว่าง' : 'โหมดมืด';
+    }
+
+    // ใช้ Flag CDN (flagcdn.com) แสดงผลทุกอุปกรณ์
+    const flagCDN = (code) => `<img src="https://flagcdn.com/w40/${code}.png" 
+         srcset="https://flagcdn.com/w80/${code}.png 2x"
+         width="28" height="20" 
+         alt="${code}" 
+         class="flag"
+         loading="lazy">`;
+
+    // แปลงชื่อทีมเป็นรหัสประเทศ
+    const countryCodes = {
+        "Mexico": "mx", "South Africa": "za", "South Korea": "kr", "Czechia": "cz",
+        "Canada": "ca", "Bosnia": "ba", "USA": "us", "Paraguay": "py",
+        "Haiti": "ht", "Scotland": "gb-sct", "Australia": "au", "Türkiye": "tr",
+        "Brazil": "br", "Morocco": "ma", "Qatar": "qa", "Switzerland": "ch",
+        "Ivory Coast": "ci", "Ecuador": "ec", "Germany": "de", "Curaçao": "cw",
+        "Netherlands": "nl", "Japan": "jp", "Sweden": "se", "Tunisia": "tn",
+        "Saudi Arabia": "sa", "Uruguay": "uy", "Spain": "es", "Cape Verde": "cv",
+        "Iran": "ir", "New Zealand": "nz", "Belgium": "be", "Egypt": "eg",
+        "France": "fr", "Senegal": "sn", "Iraq": "iq", "Norway": "no",
+        "Argentina": "ar", "Algeria": "dz", "Austria": "at", "Jordan": "jo",
+        "Ghana": "gh", "Panama": "pa", "England": "gb-eng", "Croatia": "hr",
+        "Portugal": "pt", "Congo DR": "cd", "Uzbekistan": "uz", "Colombia": "co"
+    };
+
+    function getFlag(country) {
+        const code = countryCodes[country];
+        return code ? flagCDN(code) : '<span style="font-size:1.4em;">🏳️</span>';
+    }
+
+    const matchData = [
+        [1, "group", "12 มิ.ย. 2569", "02:00 น.", "Mexico v South Africa"],
+        [2, "group", "12 มิ.ย. 2569", "09:00 น.", "South Korea v Czechia"],
+        [3, "group", "13 มิ.ย. 2569", "02:00 น.", "Canada v Bosnia"],
+        [4, "group", "13 มิ.ย. 2569", "08:00 น.", "USA v Paraguay"],
+        [5, "group", "14 มิ.ย. 2569", "08:00 น.", "Haiti v Scotland"],
+        [6, "group", "14 มิ.ย. 2569", "11:00 น.", "Australia v Türkiye"],
+        [7, "group", "14 มิ.ย. 2569", "05:00 น.", "Brazil v Morocco"],
+        [8, "group", "14 มิ.ย. 2569", "02:00 น.", "Qatar v Switzerland"],
+        [9, "group", "15 มิ.ย. 2569", "06:00 น.", "Ivory Coast v Ecuador"],
+        [10, "group", "15 มิ.ย. 2569", "00:00 น.", "Germany v Curaçao"],
+        [11, "group", "15 มิ.ย. 2569", "03:00 น.", "Netherlands v Japan"],
+        [12, "group", "15 มิ.ย. 2569", "09:00 น.", "Sweden v Tunisia"],
+        [13, "group", "16 มิ.ย. 2569", "05:00 น.", "Saudi Arabia v Uruguay"],
+        [14, "group", "16 มิ.ย. 2569", "23:00 น.", "Spain v Cape Verde"],
+        [15, "group", "16 มิ.ย. 2569", "08:00 น.", "Iran v New Zealand"],
+        [16, "group", "16 มิ.ย. 2569", "02:00 น.", "Belgium v Egypt"],
+        [17, "group", "17 มิ.ย. 2569", "02:00 น.", "France v Senegal"],
+        [18, "group", "17 มิ.ย. 2569", "05:00 น.", "Iraq v Norway"],
+        [19, "group", "17 มิ.ย. 2569", "08:00 น.", "Argentina v Algeria"],
+        [20, "group", "17 มิ.ย. 2569", "11:00 น.", "Austria v Jordan"],
+        [21, "group", "18 มิ.ย. 2569", "06:00 น.", "Ghana v Panama"],
+        [22, "group", "18 มิ.ย. 2569", "03:00 น.", "England v Croatia"],
+        [23, "group", "18 มิ.ย. 2569", "00:00 น.", "Portugal v Congo DR"],
+        [24, "group", "18 มิ.ย. 2569", "09:00 น.", "Uzbekistan v Colombia"],
+        [25, "group", "19 มิ.ย. 2569", "23:00 น.", "Czechia v South Africa"],
+        [26, "group", "19 มิ.ย. 2569", "02:00 น.", "Switzerland v Bosnia"],
+        [27, "group", "19 มิ.ย. 2569", "05:00 น.", "Canada v Qatar"],
+        [28, "group", "19 มิ.ย. 2569", "08:00 น.", "Mexico v South Korea"],
+        [29, "group", "20 มิ.ย. 2569", "07:30 น.", "Brazil v Haiti"],
+        [30, "group", "20 มิ.ย. 2569", "05:00 น.", "Scotland v Morocco"],
+        [31, "group", "20 มิ.ย. 2569", "10:00 น.", "Türkiye v Paraguay"],
+        [32, "group", "20 มิ.ย. 2569", "02:00 น.", "USA v Australia"],
+        [33, "group", "21 มิ.ย. 2569", "03:00 น.", "Germany v Ivory Coast"],
+        [34, "group", "21 มิ.ย. 2569", "07:00 น.", "Ecuador v Curaçao"],
+        [35, "group", "21 มิ.ย. 2569", "00:00 น.", "Netherlands v Sweden"],
+        [36, "group", "21 มิ.ย. 2569", "11:00 น.", "Tunisia v Japan"],
+        [37, "group", "22 มิ.ย. 2569", "05:00 น.", "Uruguay v Cape Verde"],
+        [38, "group", "22 มิ.ย. 2569", "23:00 น.", "Spain v Saudi Arabia"],
+        [39, "group", "22 มิ.ย. 2569", "02:00 น.", "Belgium v Iran"],
+        [40, "group", "22 มิ.ย. 2569", "08:00 น.", "New Zealand v Egypt"],
+        [41, "group", "23 มิ.ย. 2569", "07:00 น.", "Norway v Senegal"],
+        [42, "group", "23 มิ.ย. 2569", "04:00 น.", "France v Iraq"],
+        [43, "group", "23 มิ.ย. 2569", "00:00 น.", "Argentina v Austria"],
+        [44, "group", "23 มิ.ย. 2569", "10:00 น.", "Jordan v Algeria"],
+        [45, "group", "24 มิ.ย. 2569", "03:00 น.", "England v Ghana"],
+        [46, "group", "24 มิ.ย. 2569", "06:00 น.", "Panama v Croatia"],
+        [47, "group", "24 มิ.ย. 2569", "00:00 น.", "Portugal v Uzbekistan"],
+        [48, "group", "24 มิ.ย. 2569", "09:00 น.", "Colombia v Congo DR"],
+        [49, "group", "25 มิ.ย. 2569", "07:00 น.", "Scotland v Brazil"],
+        [50, "group", "25 มิ.ย. 2569", "07:00 น.", "Morocco v Haiti"],
+        [51, "group", "25 มิ.ย. 2569", "01:00 น.", "Switzerland v Canada"],
+        [52, "group", "25 มิ.ย. 2569", "01:00 น.", "Bosnia v Qatar"],
+        [53, "group", "25 มิ.ย. 2569", "08:00 น.", "Czechia v Mexico"],
+        [54, "group", "25 มิ.ย. 2569", "08:00 น.", "South Africa v South Korea"],
+        [55, "group", "26 มิ.ย. 2569", "05:00 น.", "Curaçao v Ivory Coast"],
+        [56, "group", "26 มิ.ย. 2569", "05:00 น.", "Ecuador v Germany"],
+        [57, "group", "26 มิ.ย. 2569", "07:00 น.", "Japan v Sweden"],
+        [58, "group", "26 มิ.ย. 2569", "07:00 น.", "Tunisia v Netherlands"],
+        [59, "group", "26 มิ.ย. 2569", "08:00 น.", "Türkiye v USA"],
+        [60, "group", "26 มิ.ย. 2569", "08:00 น.", "Paraguay v Australia"],
+        [61, "group", "27 มิ.ย. 2569", "04:00 น.", "Norway v France"],
+        [62, "group", "27 มิ.ย. 2569", "04:00 น.", "Senegal v Iraq"],
+        [63, "group", "27 มิ.ย. 2569", "09:00 น.", "Egypt v Iran"],
+        [64, "group", "27 มิ.ย. 2569", "09:00 น.", "New Zealand v Belgium"],
+        [65, "group", "27 มิ.ย. 2569", "08:00 น.", "Cape Verde v Saudi Arabia"],
+        [66, "group", "27 มิ.ย. 2569", "07:00 น.", "Uruguay v Spain"],
+        [67, "group", "28 มิ.ย. 2569", "06:00 น.", "Panama v England"],
+        [68, "group", "28 มิ.ย. 2569", "06:00 น.", "Croatia v Ghana"],
+        [69, "group", "28 มิ.ย. 2569", "10:00 น.", "Algeria v Austria"],
+        [70, "group", "28 มิ.ย. 2569", "10:00 น.", "Jordan v Argentina"],
+        [71, "group", "28 มิ.ย. 2569", "08:30 น.", "Colombia v Portugal"],
+        [72, "group", "28 มิ.ย. 2569", "08:30 น.", "Congo DR v Uzbekistan"],
+
+        [73, "round32", "30 มิ.ย. 2569", "02:00 น.", " v "],
+        [74, "round32", "30 มิ.ย. 2569", "08:00 น.", " v "],
+        [75, "round32", "30 มิ.ย. 2569", "23:00 น.", " v "],
+        [76, "round32", "1 ก.ค. 2569", "02:00 น.", " v "],
+        [77, "round32", "1 ก.ค. 2569", "08:00 น.", " v "],
+        [78, "round32", "1 ก.ค. 2569", "23:00 น.", " v "],
+        [79, "round32", "2 ก.ค. 2569", "02:00 น.", " v "],
+        [80, "round32", "2 ก.ค. 2569", "08:00 น.", " v "],
+        [81, "round32", "2 ก.ค. 2569", "23:00 น.", " v "],
+        [82, "round32", "3 ก.ค. 2569", "02:00 น.", " v "],
+        [83, "round32", "3 ก.ค. 2569", "08:00 น.", " v "],
+        [84, "round32", "3 ก.ค. 2569", "23:00 น.", " v "],
+        [85, "round32", "4 ก.ค. 2569", "02:00 น.", " v "],
+        [86, "round32", "4 ก.ค. 2569", "08:00 น.", " v "],
+        [87, "round32", "4 ก.ค. 2569", "23:00 น.", " v "],
+        [88, "round32", "5 ก.ค. 2569", "02:00 น.", " v "],
+
+        [89, "round16", "6 ก.ค. 2569", "02:00 น.", " v "],
+        [90, "round16", "6 ก.ค. 2569", "08:00 น.", " v "],
+        [91, "round16", "7 ก.ค. 2569", "02:00 น.", " v "],
+        [92, "round16", "7 ก.ค. 2569", "08:00 น.", " v "],
+        [93, "round16", "8 ก.ค. 2569", "02:00 น.", " v "],
+        [94, "round16", "8 ก.ค. 2569", "08:00 น.", " v "],
+        [95, "round16", "9 ก.ค. 2569", "02:00 น.", " v "],
+        [96, "round16", "9 ก.ค. 2569", "08:00 น.", " v "],
+
+        [97, "quarter", "11 ก.ค. 2569", "02:00 น.", " v "],
+        [98, "quarter", "11 ก.ค. 2569", "08:00 น.", " v "],
+        [99, "quarter", "12 ก.ค. 2569", "02:00 น.", " v "],
+        [100, "quarter", "12 ก.ค. 2569", "08:00 น.", " v "],
+
+        [101, "semi", "14 ก.ค. 2569", "02:00 น.", " v "],
+        [102, "semi", "15 ก.ค. 2569", "02:00 น.", " v "],
+
+        [103, "third", "18 ก.ค. 2569", "02:00 น.", " v "],
+
+        [104, "final", "19 ก.ค. 2569", "02:00 น.", " v "]
+    ];
+
+    const roundNames = {
+        "group": "รอบแบ่งกลุ่ม",
+        "round32": "รอบ 32 ทีม",
+        "round16": "รอบ 16 ทีม",
+        "quarter": "รอบก่อนรองฯ",
+        "semi": "รอบรองฯ",
+        "third": "ชิงอันดับ 3",
+        "final": "ชิงชนะเลิศ"
+    };
+
+    const roundClass = {
+        "group": "round-group",
+        "round32": "round-knockout",
+        "round16": "round-knockout",
+        "quarter": "round-knockout",
+        "semi": "round-knockout",
+        "third": "round-knockout",
+        "final": "round-knockout"
+    };
+
+    const tbody = document.getElementById('schedule-body');
+    const dateFilter = document.getElementById('dateFilter');
+    const roundFilter = document.getElementById('roundFilter');
+    const teamSearch = document.getElementById('teamSearch');
+    const hideEndedBtn = document.getElementById('hideEnded');
+    const matchCount = document.getElementById('matchCount');
+
+    const thaiMonths = { "ม.ค.":0, "ก.พ.":1, "มี.ค.":2, "เม.ย.":3, "พ.ค.":4, "มิ.ย.":5, "ก.ค.":6, "ส.ค.":7, "ก.ย.":8, "ต.ค.":9, "พ.ย.":10, "ธ.ค.":11 };
+
+    function parseMatchDateTime(dateStr, timeStr) {
+        const parts = dateStr.split(' ');
+        const day = parseInt(parts[0]);
+        const month = thaiMonths[parts[1]];
+        const year = parseInt(parts[2]) - 543;
+        const timeParts = timeStr.replace(' น.', '').split(':');
+        return new Date(year, month, day, parseInt(timeParts[0]), parseInt(timeParts[1]));
+    }
+
+    const uniqueDates = [...new Set(matchData.map(row => row[2]))];
+    uniqueDates.forEach(date => {
+        const option = document.createElement('option');
+        option.value = date;
+        option.textContent = date;
+        dateFilter.appendChild(option);
+    });
+
+    function renderTable() {
+        tbody.innerHTML = '';
+        const search = teamSearch.value.toLowerCase();
+        const selectedDate = dateFilter.value;
+        const selectedRound = roundFilter.value;
+        const hideEnded = hideEndedBtn.checked;
+        const now = new Date();
+        
+        let activeDate = null;
+        for (let row of matchData) {
+            if (parseMatchDateTime(row[2], row[3]) >= now) {
+                activeDate = row[2];
+                break;
+            }
+        }
+
+        let visibleCount = 0;
+
+        matchData.forEach(row => {
+            const [match, round, date, time, matchup] = row;
+            const teams = matchup.split(' v ');
+            const home = teams[0].trim(), away = teams[1].trim();
+            const matchTime = parseMatchDateTime(date, time);
+            const isEnded = matchTime < now;
+            const isActiveDay = date === activeDate && !isEnded;
+            const isEmpty = (home === "" && away === "");
+
+            if (search && !isEmpty && !home.toLowerCase().includes(search) && !away.toLowerCase().includes(search)) return;
+            if (search && isEmpty) return;
+            if (selectedDate && date !== selectedDate) return;
+            if (selectedRound && round !== selectedRound) return;
+            if (hideEnded && isEnded) return;
+
+            visibleCount++;
+            const tr = document.createElement('tr');
+            
+            if (isEnded && !isEmpty) tr.classList.add('row-ended');
+            if (isActiveDay) tr.classList.add('active-day');
+
+            if (isEmpty) {
+                tr.innerHTML = `
+                    <td><strong>${match}</strong></td>
+                    <td><span class="round-badge ${roundClass[round]}">${roundNames[round]}</span></td>
+                    <td>
+                        <span>${date}</span>
+                        ${isActiveDay ? '<span class="active-badge">⭐ กำลังมาถึง</span>' : ''}
+                    </td>
+                    <td><span>${time}</span></td>
+                    <td>
+                        <div class="match">
+                            <div class="team-home">
+                                <span class="empty-slot"></span>
+                            </div>
+                            <div class="vs">VS</div>
+                            <div class="team-away">
+                                <span class="empty-slot"></span>
+                            </div>
+                        </div>
+                    </td>
+                `;
+            } else {
+                tr.innerHTML = `
+                    <td><strong>${match}</strong></td>
+                    <td><span class="round-badge ${roundClass[round]}">${roundNames[round]}</span></td>
+                    <td>
+                        <span>${date}</span>
+                        ${isActiveDay ? '<span class="active-badge">⭐ กำลังมาถึง</span>' : ''}
+                    </td>
+                    <td>
+                        <span>${time}</span>
+                        ${isEnded ? '<span class="ended-badge">✓ จบแล้ว</span>' : ''}
+                    </td>
+                    <td>
+                        <div class="match">
+                            <div class="team-home">
+                                <span>${home}</span>
+                                ${getFlag(home)}
+                            </div>
+                            <div class="vs">VS</div>
+                            <div class="team-away">
+                                ${getFlag(away)}
+                                <span>${away}</span>
+                            </div>
+                        </div>
+                    </td>
+                `;
+            }
+            tbody.appendChild(tr);
+        });
+        matchCount.textContent = visibleCount;
+    }
+
+    teamSearch.addEventListener('input', renderTable);
+    dateFilter.addEventListener('change', renderTable);
+    roundFilter.addEventListener('change', renderTable);
+    hideEndedBtn.addEventListener('change', renderTable);
+    document.getElementById('clearFilter').addEventListener('click', () => {
+        teamSearch.value = ''; 
+        dateFilter.value = ''; 
+        roundFilter.value = '';
+        hideEndedBtn.checked = false;
+        renderTable();
+    });
+
+    initTheme();
+    renderTable();
+</script>
+
+</body>
+</html>
